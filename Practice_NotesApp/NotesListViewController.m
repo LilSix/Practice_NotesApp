@@ -9,9 +9,11 @@
 #import "NotesListViewController.h"
 #import "NoteDetail.h"
 
-@interface NotesListViewController () {
+@interface NotesListViewController ()<UITableViewDelegate, UITableViewDataSource> {
     NSMutableArray *mutableArrayWithNotesList;
 }
+
+@property (weak, nonatomic) IBOutlet UITableView *tableViewNotesList;
 
 @end
 
@@ -21,8 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [_tableViewWithNotesList setDelegate:self];
-    [_tableViewWithNotesList setDataSource:self];
+    [_tableViewNotesList setDelegate:self];
+    [_tableViewNotesList setDataSource:self];
     [[self navigationItem] setLeftBarButtonItem:[self editButtonItem]];
 }
 
@@ -42,7 +44,7 @@
         
         for (int i = 0; i < 6; i++) {
             NoteDetail *noteDetail = [[NoteDetail alloc] init];
-            [noteDetail setStringWithNoteDetail:[NSString stringWithFormat:@"New note"]];
+            [noteDetail setNoteContentString:[NSString stringWithFormat:@"New note"]];
             [mutableArrayWithNotesList addObject:noteDetail];
         }
     }
@@ -54,7 +56,7 @@
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
     [super setEditing:editing animated:animated];
-    [_tableViewWithNotesList setEditing:editing animated:animated];
+    [_tableViewNotesList setEditing:editing animated:animated];
 }
 
 
@@ -62,18 +64,20 @@
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
+    
     return [mutableArrayWithNotesList count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *tableViewCell = [tableView dequeueReusableCellWithIdentifier:@"Basic"
+    UITableViewCell *tableViewCell = [tableView dequeueReusableCellWithIdentifier:@"Basic Cell"
                                                                      forIndexPath:indexPath];
     NoteDetail *noteDetail = [mutableArrayWithNotesList objectAtIndex:[indexPath row]];
-    [[tableViewCell textLabel] setText:[noteDetail stringWithNoteDetail]];
+    [[tableViewCell textLabel] setText:[noteDetail noteContentString]];
     
     [tableViewCell setShowsReorderControl:YES];
+    
     return tableViewCell;
 }
 
@@ -83,8 +87,8 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
  forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [mutableArrayWithNotesList removeObjectAtIndex:[indexPath row]];
-        [_tableViewWithNotesList deleteRowsAtIndexPaths:@[indexPath]
-                                       withRowAnimation:UITableViewRowAnimationAutomatic];
+        [_tableViewNotesList deleteRowsAtIndexPaths:@[indexPath] 
+                                   withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
@@ -92,6 +96,7 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 - (void)tableView:(UITableView *)tableView
 moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
        toIndexPath:(NSIndexPath *)destinationIndexPath {
+    
     NoteDetail *noteDetail = mutableArrayWithNotesList[[sourceIndexPath row]];
     [mutableArrayWithNotesList removeObjectAtIndex:[sourceIndexPath row]];
     [mutableArrayWithNotesList insertObject:noteDetail atIndex:[destinationIndexPath row]];
@@ -104,13 +109,12 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 
 - (IBAction)barButtonItemAddTouch:(UIBarButtonItem *)sender {
     NoteDetail *noteDetail = [[NoteDetail alloc] init];
-    [noteDetail setStringWithNoteDetail:[NSString stringWithFormat:@"New note"]];
+    [noteDetail setNoteContentString:[NSString stringWithFormat:@"New note"]];
     [mutableArrayWithNotesList addObject:noteDetail];
     
-    [_tableViewWithNotesList
-        insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[mutableArrayWithNotesList count] - 1
-                                                    inSection:0]]
-              withRowAnimation:UITableViewRowAnimationAutomatic];
+    [_tableViewNotesList insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[mutableArrayWithNotesList count] - 1
+                                                                     inSection:0]]
+                               withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 /*

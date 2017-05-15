@@ -10,7 +10,4 @@
 
 @interface NotesListViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
-@property (weak, nonatomic) IBOutlet UITableView *tableViewWithNotesList;
-
-
 @end

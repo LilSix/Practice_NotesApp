@@ -11,7 +11,7 @@
 
 @interface NoteDetail : NSObject
 
-@property (strong, nonatomic) NSString *stringWithNoteDetail;
-@property (strong, nonatomic) UIImage *imageWithNoteDetail;
+@property (strong, nonatomic) NSString *noteContentString;
+@property (strong, nonatomic) UIImage *noteContentImage;
 
 @end
