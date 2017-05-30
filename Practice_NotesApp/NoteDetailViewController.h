@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NoteDetail.h"
 
 @interface NoteDetailViewController : UIViewController
+
+@property (strong, nonatomic) NoteDetail *noteDetail;
 
 @end
